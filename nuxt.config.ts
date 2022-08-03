@@ -5,6 +5,6 @@ export default defineNuxtConfig({
     modules: ['@nuxtjs/tailwindcss'],
 
     publicRuntimeConfig: {
-        API_ENDPOINT: process.env.API_ENDPOINT || 'https://guide-api.hsuan.app',
+        API_ENDPOINT: process.env.API_ENDPOINT || 'https://guide-api.hsuan.app/api',
     }
 })
