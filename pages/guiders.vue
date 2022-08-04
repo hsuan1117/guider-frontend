@@ -15,8 +15,7 @@ import _ from 'lodash';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const config = useRuntimeConfig()
-const {data: {value: guiders}} = await useFetch(`${process.env.API_ENDPOINT}/guiders`)
+const {data: {value: guiders}} = await useFetch(`${useRuntimeConfig().public.API_ENDPOINT}/guiders`)
 
 const mobileMenuOpen = ref(false)
 const mobileFiltersOpen = ref(false)
