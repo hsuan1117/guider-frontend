@@ -2,33 +2,9 @@
 
 import {ref} from 'vue'
 import {
-	Dialog,
-	DialogOverlay,
-	Popover,
-	PopoverButton,
-	PopoverGroup,
-	PopoverPanel,
-	RadioGroup,
-	RadioGroupDescription,
-	RadioGroupLabel,
-	RadioGroupOption,
-	Tab,
-	TabGroup,
-	TabList,
-	TabPanel,
-	TabPanels,
-	TransitionChild,
-	TransitionRoot,
-} from '@headlessui/vue'
-import {
-	MenuIcon,
-	SearchIcon,
-	ShieldCheckIcon,
-	ShoppingBagIcon,
-	XIcon,
 	HeartIcon as HeartOutlineIcon
 } from '@heroicons/vue/outline'
-import {CheckIcon, QuestionMarkCircleIcon, StarIcon, HeartIcon as HeartSolidIcon} from '@heroicons/vue/solid'
+import {StarIcon} from '@heroicons/vue/solid'
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -88,7 +64,6 @@ const open = ref(false)
 
 <template>
 	<div class="bg-gray-50">
-		<!-- Mobile menu -->
 		<Header/>
 
 		<main>
