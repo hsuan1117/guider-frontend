@@ -15,12 +15,13 @@ import _ from 'lodash';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const guiders = []
+const config = useRuntimeConfig()
+const {data: {value: guiders}} = await useFetch(`${process.env.API_ENDPOINT}/guiders`)
+
 const mobileMenuOpen = ref(false)
 const mobileFiltersOpen = ref(false)
 
 const filteredDepartment = computed(() => {
-	console.log(1)
 	if (!originFilter) return _.uniq(guiders.map(p => p.profile.department)).map(department => ({
 		label: department,
 		value: department
@@ -244,13 +245,13 @@ watch(appliedFilter, (newValue) => {
 						<div
 							class="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
 							<a v-for="guider in filteredGuiders" :key="guider.id"
-							   :href="route('info.show', {user: guider.id})"
+							   :href="`/info/${guider.id}`"
 							   class="group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden px-4 py-6"
 							>
 								<div
 									class="aspect-w-3 aspect-h-4 bg-gray-200 group-hover:opacity-75 sm:aspect-none sm:h-96">
-									<img :src="guider.profile_photo_url" :alt="guider.name + '頭像'"
-									     class="w-full h-full object-center object-cover sm:w-full sm:h-full"/>
+									<nuxt-img :src="guider.profile_photo_url" :alt="guider.name + '頭像'"
+									          class="w-full h-full object-center object-cover sm:w-full sm:h-full"/>
 								</div>
 								<div class="flex-1 p-4 space-y-2 flex flex-col">
 									<h3 class="text-2xl font-medium text-gray-900">
