@@ -9,7 +9,7 @@ import {
 	TransitionChild,
 	TransitionRoot,
 } from '@headlessui/vue'
-import {XIcon, StarIcon as StarOutlineIcon} from '@heroicons/vue/outline'
+import {StarIcon as StarOutlineIcon, XIcon} from '@heroicons/vue/outline'
 import {ChevronDownIcon, PlusSmIcon, StarIcon} from '@heroicons/vue/solid'
 import _ from 'lodash';
 import Header from "../components/Header";
@@ -68,10 +68,9 @@ const filters = ref([
 		}))
 	},
 ])
-const originFilter = filters.value.reduce((prev, curr) => [...prev, ...curr.options.map(x => curr.id + '-' + x.value)], [])
+const originFilter = [...filters.value.reduce((prev, curr) => [...prev, ...curr.options.map(x => curr.id + '-' + x.value)], []), ...filters.value.map(f => f.id).map(id => id + '-all')]
 // Array<{ID}-{Name}>
 const appliedFilter = ref(originFilter)
-
 const filteredGuiders = computed(() => {
 	let remove = _.xor(originFilter, appliedFilter.value);
 	return guiders.filter(g => {
@@ -103,7 +102,12 @@ watch(appliedFilter, (newValue) => {
 	const allRemovedSchool = remove.filter(rm => rm.startsWith('School-')).map(rm => rm.split('-')[1])
 	const allRemovedCollege = remove.filter(rm => rm.startsWith('College-')).map(rm => rm.split('-')[1])
 
-	console.log(allRemovedCollege)
+	if (remove.filter(rm => rm.endsWith('-all')).length>0) {
+		remove.filter(rm => rm.endsWith('-all')).forEach(r=>{
+			appliedFilter.value = appliedFilter.value.filter(f => !f.startsWith(r.split('-')[0]))
+		})
+	}
+
 	// College
 	filters.value[2].options = _.uniq(guiders.filter(guider => !allRemovedSchool.includes(guider.profile.school)).map(p => p.profile.school + p.profile.college)).map(college => ({
 		label: college,
@@ -217,8 +221,21 @@ watch(appliedFilter, (newValue) => {
 											{{ section.name }}
 										</legend>
 										<div class="pt-6 space-y-3">
+											<div class="flex items-center">
+												<input :id="`${section.id}-all`" :name="`${section.id}[]`"
+												       type="checkbox"
+												       :value="`${section.id}-all`"
+												       v-model="appliedFilter"
+												       class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
+												       checked/>
+												<label :for="`${section.id}-all`"
+												       class="ml-3 text-sm text-gray-600 font-extrabold">
+													全選
+												</label>
+											</div>
 											<div v-for="(option, optionIdx) in section.options" :key="option.value"
 											     class="flex items-center">
+
 												<input :id="`${section.id}-${optionIdx}`" :name="`${section.id}[]`"
 												       :value="section.id+'-'+option.value" type="checkbox"
 												       v-model="appliedFilter"
