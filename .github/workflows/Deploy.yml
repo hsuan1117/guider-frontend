@@ -15,6 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
+
       - name: Setup node env
         uses: actions/setup-node@v2.1.2
         with:
