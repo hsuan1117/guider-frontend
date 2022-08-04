@@ -32,7 +32,7 @@ import {CheckIcon, QuestionMarkCircleIcon, StarIcon, HeartIcon as HeartSolidIcon
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
-const {data: {value: person}} = await useFetch(`${process.env.API_ENDPOINT}/info/${useRoute().params.id}`)
+const {data: {value: person}} = await useFetch(`${useRuntimeConfig().public.API_ENDPOINT}/info/${useRoute().params.id}`)
 
 const policies = [
 	{
