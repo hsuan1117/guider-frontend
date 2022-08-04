@@ -34,6 +34,12 @@ const filteredDepartment = computed(() => {
 	}))
 })
 
+/* 列表 */
+const allEnterMethod = _.uniq(guiders.reduce((prev, curr) => [...prev, ...curr.profile.enterMethod ?? []], []))
+const allSchool = _.uniq(guiders.map(p => p.profile.school))
+const allCollege = _.uniq(guiders.map(p => p.profile.school + p.profile.college))
+const allDepartment = _.uniq(guiders.map(p => p.profile.department))
+
 const filters = ref([
 	{
 		id: 'EnterMethod',
@@ -68,6 +74,9 @@ const filters = ref([
 		}))
 	},
 ])
+const originSelectAll = filters.value.map(f => f.id)
+const selectAll = ref(filters.value.map(f => f.id))
+
 const originFilter = [...filters.value.reduce((prev, curr) => [...prev, ...curr.options.map(x => curr.id + '-' + x.value)], []), ...filters.value.map(f => f.id).map(id => id + '-all')]
 // Array<{ID}-{Name}>
 const appliedFilter = ref(originFilter)
@@ -97,16 +106,18 @@ const filteredGuiders = computed(() => {
 		return enterMethodRemoval !== g.profile.enterMethod.length;
 	})
 })
+
+watch(selectAll, (newValue) => {
+	const removedSelectAll = _.xor(originSelectAll, newValue)
+
+	removedSelectAll.forEach(r => appliedFilter.value = appliedFilter.value.filter(a => !a.startsWith(r)))
+	newValue.forEach(n => appliedFilter.value = _.uniq([...appliedFilter.value, ...originFilter.filter(o=>o.startsWith(n))]))
+})
+
 watch(appliedFilter, (newValue) => {
 	let remove = _.xor(originFilter, newValue);
 	const allRemovedSchool = remove.filter(rm => rm.startsWith('School-')).map(rm => rm.split('-')[1])
 	const allRemovedCollege = remove.filter(rm => rm.startsWith('College-')).map(rm => rm.split('-')[1])
-
-	if (remove.filter(rm => rm.endsWith('-all')).length>0) {
-		remove.filter(rm => rm.endsWith('-all')).forEach(r=>{
-			appliedFilter.value = appliedFilter.value.filter(f => !f.startsWith(r.split('-')[0]))
-		})
-	}
 
 	// College
 	filters.value[2].options = _.uniq(guiders.filter(guider => !allRemovedSchool.includes(guider.profile.school)).map(p => p.profile.school + p.profile.college)).map(college => ({
@@ -222,12 +233,11 @@ watch(appliedFilter, (newValue) => {
 										</legend>
 										<div class="pt-6 space-y-3">
 											<div class="flex items-center">
-												<input :id="`${section.id}-all`" :name="`${section.id}[]`"
+												<input :id="`${section.id}-all`"
 												       type="checkbox"
-												       :value="`${section.id}-all`"
-												       v-model="appliedFilter"
-												       class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"
-												       checked/>
+												       :value="section.id"
+												       v-model="selectAll"
+												       class="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary"/>
 												<label :for="`${section.id}-all`"
 												       class="ml-3 text-sm text-gray-600 font-extrabold">
 													全選
