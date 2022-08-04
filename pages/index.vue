@@ -89,7 +89,7 @@ const mobileMenuOpen = ref(false)
 										#unfilteredcollegelife
 									</p>
 									<div class="mt-6">
-										<a href="/"
+										<a href="/guiders"
 										   class="inline-block bg-primary border border-transparent py-3 px-8 rounded-md font-bold text-white hover:bg-primary">
 											開始尋找引路人！
 										</a>
